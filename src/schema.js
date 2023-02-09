@@ -2,29 +2,29 @@ const {buildSchema} = require("graphql");
 
 const schema = buildSchema(`
   type User {
-    id: ID
-    name: String
-    debit: Float
+    id: ID!
+    name: String!
+    debit: Float!
   }
   
   type Room {
-    roomId: ID
-    roomName: String
-    roomPassword: String
-    members: [User]
+    roomId: ID!
+    roomName: String!
+    roomPassword: String!
+    members: [User!]!
   }
   
   input UserInput {
     id: ID!
     name: String!
-    debit: Float!
+    debit: Float
   }
   
   input RoomInput {
     roomId: ID
     roomName: String!
     roomPassword: String!
-    members: [UserInput]!
+    members: [UserInput!]!
   }
   
   input RoomSignIn {
