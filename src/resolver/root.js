@@ -3,7 +3,20 @@ const getNewId = require('../helpers/getNewId')
 
 const createRoom = (input) => {
     const id = getNewId()
-    return {...input, roomId: id, members: input.members}
+    return {...input, roomId: id}
+}
+
+const getRoom = (roomId) => {
+    let res;
+    rooms.forEach((room) => {
+        if(room.roomId === roomId)
+            res = room;
+    })
+    return res;
+}
+
+const roomSignIn = () => {
+
 }
 
 const root = {
@@ -21,12 +34,7 @@ const root = {
     },
 
     getRoom: ({roomId}) => {
-        let res;
-        rooms.forEach((room) => {
-            if(room.roomId === roomId)
-                res = room;
-        })
-        return res;
+        return getRoom(roomId)
     },
 
     createRoom: ({input}) => {

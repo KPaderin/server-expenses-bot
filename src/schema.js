@@ -28,7 +28,7 @@ const schema = buildSchema(`
   }
   
   input RoomSignIn {
-    roomName: String!
+    roomId: ID!
     roomPassword: String!
     userInput: UserInput!
   }
