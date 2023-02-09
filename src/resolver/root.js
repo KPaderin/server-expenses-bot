@@ -1,6 +1,8 @@
 const rooms = require("../data/rooms");
 const getNewId = require('../helpers/getNewId')
 
+const errorsList = require("../schema/errorsList")
+
 const createRoom = (input) => {
     const id = getNewId()
     return {...input, roomId: id}
@@ -12,11 +14,54 @@ const getRoom = (roomId) => {
         if(room.roomId === roomId)
             res = room;
     })
+    if(res === undefined)
+        throw errorsList.invalidRoomId
     return res;
 }
 
-const roomSignIn = () => {
+const roomSignIn = (input) => {
+    let res = [];
+    let room = getRoom(input.roomId)
+    if(room.members.filter(member => member.id === input.userInput.id).length !== 0)
+        throw errorsList.userAlreadyExist;
+    if(room.roomPassword !== input.roomPassword)
+        throw errorsList.invalidPassword;
+    res = room;
+    res.members.push(input.userInput)
+    return res
+}
 
+const findUserInRoom = (userId, room) => {
+    let user = room.members.find((member) => member.id === userId)
+    if(!user)
+        throw errorsList.userNotExist
+    return user
+}
+
+const payMoney = (input) => {
+    let room = getRoom(input.roomId)
+
+    let userSetter = findUserInRoom(input.userSetterId, room)
+    let userGetter = findUserInRoom(input.userGetterId, room)
+    userSetter.debit -= input.value
+    userGetter.debit += input.value
+
+    return room
+}
+
+const addBuy = (input) => {
+    let room = getRoom(input.roomId)
+
+    let userSetter = findUserInRoom(input.userSetterId, room)
+    let members = input.membersId.map(memberId => findUserInRoom(memberId, room))
+
+    if(!input.members.find(member => member.id === input.userSetterId))
+        throw errorsList.userSetterNotFound
+
+    userSetter.debit -= input.value
+    members.forEach(member => member.debit += Number(input.value) / input.membersId.length)
+
+    return room
 }
 
 const root = {
@@ -44,49 +89,15 @@ const root = {
     },
 
     roomSignIn: ({input}) => {
-        let res = [];
-        rooms.forEach(room => {
-            if (room.roomName === input.roomName)
-            {
-                if(room.roomPassword === input.roomPassword)
-                {
-                    res = room;
-                    room.members.push(input.userInput)
-                }
-            }
-        })
-        return res
+        return roomSignIn(input)
     },
 
     payMoney: ({input}) => {
-        let room;
-        rooms.forEach((room1) => {
-            if(room1.roomId === input.roomId)
-                room = room1;
-        })
-        room.members.forEach(member => {
-            if(member.id === input.userSetterId)
-                member.debit -= input.value
-            if(member.id === input.userGetterId)
-                member.debit += input.value
-        })
-        return room
+        return payMoney(input)
     },
+
     addBuy: ({input}) => {
-        let room;
-        rooms.forEach((room1) => {
-            if(room1.roomId === input.roomId)
-                room = room1;
-        })
-        room.members.forEach(member => {
-            if(member.id === input.userSetterId)
-                member.debit -= input.value
-            input.membersId.forEach(memberId => {
-                if(member.id === memberId)
-                    member.debit += Number(input.value) / input.membersId.length
-            })
-        })
-        return room
+        return addBuy(input)
     }
 }
 
