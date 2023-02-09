@@ -55,7 +55,7 @@ const addBuy = (input) => {
     let userSetter = findUserInRoom(input.userSetterId, room)
     let members = input.membersId.map(memberId => findUserInRoom(memberId, room))
 
-    if(!input.members.find(member => member.id === input.userSetterId))
+    if(!input.membersId.find(id => id === input.userSetterId))
         throw errorsList.userSetterNotFound
 
     userSetter.debit -= input.value

@@ -17,7 +17,7 @@ const schema = buildSchema(`
   input UserInput {
     id: ID!
     name: String!
-    debit: Float
+    debit: Float!
   }
   
   input RoomInput {
@@ -43,7 +43,7 @@ const schema = buildSchema(`
   input BuyInput {
     roomId: ID!
     userSetterId: ID!
-    membersId: [ID]!
+    membersId: [ID!]!
     value: Float!
   }
   
