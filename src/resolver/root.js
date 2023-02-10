@@ -3,22 +3,22 @@ const md5 = require('md5');
 const errorsList = require("../schema/errorsList")
 const dbFunc = require('../dataBase/db')
 
-const createRoom = (input) => {
-    return dbFunc.roomCreate(input.roomName, md5(input.roomPassword), input.members);
+const createRoom = async (input) => {
+    return await dbFunc.roomCreate(input.roomName, md5(input.roomPassword), input.members);
 }
 
-const getRoom = (roomId) => {
-    return dbFunc.getRoom(roomId)
+const getRoom = async (roomId) => {
+    return await dbFunc.getRoom(roomId)
 }
 
-const roomSignIn = (input) => {
-    let room = getRoom(input.roomId)
-    if(room.members.filter(member => member.id === input.userInput.id).length !== 0)
+const roomSignIn = async (input) => {
+    let room = await getRoom(input.roomId)
+    if(room.members.find(member => member.id === input.userInput.id))
         throw errorsList.userAlreadyExist;
     if(room.roomHashedPass !== md5(input.roomPassword))
         throw errorsList.invalidPassword;
     room.members.push(input.userInput)
-    return dbFunc.updateRoom(room)
+    return await dbFunc.updateRoom(room)
 }
 
 const findUserInRoom = (userId, room) => {
@@ -28,19 +28,19 @@ const findUserInRoom = (userId, room) => {
     return user
 }
 
-const payMoney = (input) => {
-    let room = getRoom(input.roomId)
+const payMoney = async (input) => {
+    let room = await getRoom(input.roomId)
 
     let userSetter = findUserInRoom(input.userSetterId, room)
     let userGetter = findUserInRoom(input.userGetterId, room)
     userSetter.debit -= input.value
     userGetter.debit += input.value
 
-    return dbFunc.updateRoom(room)
+    return await dbFunc.updateRoom(room)
 }
 
-const addBuy = (input) => {
-    let room = getRoom(input.roomId)
+const addBuy = async (input) => {
+    let room = await getRoom(input.roomId)
 
     let userSetter = findUserInRoom(input.userSetterId, room)
     let members = input.membersId.map(memberId => findUserInRoom(memberId, room))
@@ -51,11 +51,11 @@ const addBuy = (input) => {
     userSetter.debit -= input.value
     members.forEach(member => member.debit += Number(input.value) / input.membersId.length)
 
-    return dbFunc.updateRoom(room)
+    return await dbFunc.updateRoom(room)
 }
 
-const getRooms = (userId) => {
-    return dbFunc.getRooms(userId)
+const getRooms = async (userId) => {
+    return await dbFunc.getRooms(userId)
 }
 
 const root = {
