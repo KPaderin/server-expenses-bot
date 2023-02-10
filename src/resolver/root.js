@@ -1,9 +1,10 @@
-const errorsList = require("../schema/errorsList")
+const md5 = require('md5');
 
+const errorsList = require("../schema/errorsList")
 const dbFunc = require('../dataBase/db')
 
 const createRoom = (input) => {
-    return dbFunc.roomCreate(input.roomName, input.roomPassword, input.members);
+    return dbFunc.roomCreate(input.roomName, md5(input.roomPassword), input.members);
 }
 
 const getRoom = (roomId) => {
@@ -14,7 +15,7 @@ const roomSignIn = (input) => {
     let room = getRoom(input.roomId)
     if(room.members.filter(member => member.id === input.userInput.id).length !== 0)
         throw errorsList.userAlreadyExist;
-    if(room.roomHashedPass !== input.roomPassword)
+    if(room.roomHashedPass !== md5(input.roomPassword))
         throw errorsList.invalidPassword;
     room.members.push(input.userInput)
     return dbFunc.updateRoom(room)

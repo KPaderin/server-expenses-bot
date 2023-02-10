@@ -16,6 +16,7 @@
     "express-graphql": "^0.12.0",
     "graphql": "^16.6.0",
     "lodash": "^4.17.21",
+    "md5": "^2.3.0",
     "mongoose": "^6.9.1"
   },
   "devDependencies": {
