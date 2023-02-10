@@ -3,12 +3,15 @@ const getNewId = require('../helpers/getNewId')
 
 const errorsList = require("../schema/errorsList")
 
+const dbFunc = require('../dataBase/db')
+
 const createRoom = (input) => {
     const id = getNewId()
     return {...input, roomId: id}
 }
 
 const getRoom = (roomId) => {
+    dbFunc.roomCreate();
     let res;
     rooms.forEach((room) => {
         if(room.roomId === roomId)
