@@ -1,37 +1,23 @@
-const rooms = require("../data/rooms");
-const getNewId = require('../helpers/getNewId')
-
 const errorsList = require("../schema/errorsList")
 
 const dbFunc = require('../dataBase/db')
 
 const createRoom = (input) => {
-    const id = getNewId()
-    return {...input, roomId: id}
+    return dbFunc.roomCreate(input.roomName, input.roomPassword, input.members);
 }
 
 const getRoom = (roomId) => {
-    dbFunc.roomCreate();
-    let res;
-    rooms.forEach((room) => {
-        if(room.roomId === roomId)
-            res = room;
-    })
-    if(res === undefined)
-        throw errorsList.invalidRoomId
-    return res;
+    return dbFunc.getRoom(roomId)
 }
 
 const roomSignIn = (input) => {
-    let res = [];
     let room = getRoom(input.roomId)
     if(room.members.filter(member => member.id === input.userInput.id).length !== 0)
         throw errorsList.userAlreadyExist;
-    if(room.roomPassword !== input.roomPassword)
+    if(room.roomHashedPass !== input.roomPassword)
         throw errorsList.invalidPassword;
-    res = room;
-    res.members.push(input.userInput)
-    return res
+    room.members.push(input.userInput)
+    return dbFunc.updateRoom(room)
 }
 
 const findUserInRoom = (userId, room) => {
@@ -49,7 +35,7 @@ const payMoney = (input) => {
     userSetter.debit -= input.value
     userGetter.debit += input.value
 
-    return room
+    return dbFunc.updateRoom(room)
 }
 
 const addBuy = (input) => {
@@ -64,21 +50,16 @@ const addBuy = (input) => {
     userSetter.debit -= input.value
     members.forEach(member => member.debit += Number(input.value) / input.membersId.length)
 
-    return room
+    return dbFunc.updateRoom(room)
+}
+
+const getRooms = (userId) => {
+    return dbFunc.getRooms(userId)
 }
 
 const root = {
     getRooms: ({userId}) => {
-        return rooms.filter(room => {
-            let isCur = false
-
-            room.members.forEach(user => {
-                if (user.id === userId)
-                    isCur = true;
-            })
-
-            return isCur
-        })
+        return getRooms(userId)
     },
 
     getRoom: ({roomId}) => {
@@ -86,9 +67,7 @@ const root = {
     },
 
     createRoom: ({input}) => {
-        const room = createRoom(input)
-        rooms.push(room)
-        return room
+        return createRoom(input)
     },
 
     roomSignIn: ({input}) => {
