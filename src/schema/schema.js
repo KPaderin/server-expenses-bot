@@ -4,20 +4,19 @@ const schema = buildSchema(`
   type User {
     id: ID!
     name: String!
-    debit: Float!
+    debit: Int!
   }
   
   type Room {
     roomId: ID!
     roomName: String!
-    roomPassword: String!
     members: [User!]!
   }
   
   input UserInput {
     id: ID!
     name: String!
-    debit: Float!
+    debit: Int!
   }
   
   input RoomInput {
@@ -27,7 +26,7 @@ const schema = buildSchema(`
     members: [UserInput!]!
   }
   
-  input RoomSignIn {
+  input RoomSignInInput {
     roomId: ID!
     roomPassword: String!
     userInput: UserInput!
@@ -37,14 +36,14 @@ const schema = buildSchema(`
     roomId: ID!
     userSetterId: ID!
     userGetterId: ID!
-    value: Float!
+    value: Int!
   }
   
   input BuyInput {
     roomId: ID!
     userSetterId: ID!
     membersId: [ID!]!
-    value: Float!
+    value: Int!
   }
   
   type Query {
@@ -54,7 +53,7 @@ const schema = buildSchema(`
   
   type Mutation {
     createRoom(input: RoomInput!): Room
-    roomSignIn(input: RoomSignIn!): Room
+    roomSignIn(input: RoomSignInInput!): Room
     payMoney(input: PayMoneyInput!): Room
     addBuy(input: BuyInput!): Room
   }
