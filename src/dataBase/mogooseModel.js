@@ -6,4 +6,9 @@ const Room = mongoose.model('Room', mongoose.Schema({
     members: {type: Array, required: true}
 }))
 
-module.exports = {Room}
+const RoomLogs = mongoose.model('RoomLogs', mongoose.Schema({
+    roomId: {type: String, required: true},
+    logs: {type: Array, default:[], required: true}
+}))
+
+module.exports = {Room, RoomLogs}
