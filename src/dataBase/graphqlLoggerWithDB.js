@@ -9,7 +9,7 @@ const logger = async (requestInfo) => {
         return;
 
     const query = JSON.stringify(print(requestInfo.document))
-    const log = JSON.stringify({query: query, timeStamp: new Date()})
+    const log = {query: query, timeStamp: new Date()}
 
     const roomID = requestInfo.result.data.payMoney.roomId
 
@@ -19,7 +19,7 @@ const logger = async (requestInfo) => {
             {new: true, upsert: true, setDefaultsOnInsert: true}
         );
     } catch (e) {
-        throw new Error("error on saving log")
+        return "error on saving log"
     }
 }
 
