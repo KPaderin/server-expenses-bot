@@ -11,11 +11,15 @@ const logger = async (requestInfo) => {
     const query = JSON.stringify(print(requestInfo.document))
     const log = {query: query, timeStamp: new Date()}
 
-    const roomID = requestInfo.result.data.payMoney.roomId
+    let roomId
+    if (requestInfo.result.data.payMoney !== undefined)
+        roomId = requestInfo.result.data.payMoney.roomId
+    else
+        roomID = requestInfo.result.data.addBuy.roomId
 
     try {
         await mongooseModel.RoomLogs.updateOne(
-            {'roomId': roomID}, { $push: { logs: log} },
+            {'roomId': roomID}, { $push: { logs: log } },
             {new: true, upsert: true, setDefaultsOnInsert: true}
         );
     } catch (e) {
