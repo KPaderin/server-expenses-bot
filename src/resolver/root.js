@@ -71,34 +71,37 @@ const getRooms = async (userId) => {
     return await dbFunc.getRooms(userId)
 }
 
-const root = {
-    getRooms: ({userId}) => {
-        return getRooms(userId)
+let root = {
+    getRooms: async ({userId}) => {
+        return await getRooms(userId)
     },
 
-    getRoom: ({roomId}) => {
-        return getRoom(roomId)
+    getRoom: async ({roomId}) => {
+        return await getRoom(roomId)
     },
 
-    createRoom: ({input}) => {
-        return createRoom(input)
+    createRoom: async ({input}) => {
+        return await createRoom(input)
     },
 
-    roomSignIn: ({input}) => {
-        return roomSignIn(input)
+    roomSignIn: async ({input}) => {
+        return await roomSignIn(input)
     },
 
-    roomSignOut: ({input}) => {
-        return roomSignOut(input)
+    roomSignOut: async ({input}) => {
+        return await roomSignOut(input)
     },
 
-    payMoney: ({input}) => {
-        return payMoney(input)
+    payMoney: async ({input}) => {
+        return await payMoney(input)
     },
 
-    addBuy: ({input}) => {
-        return addBuy(input)
+    addBuy: async ({input}) => {
+        return await addBuy(input)
     }
 }
+const needLogged = ['payMoney', 'addBuy', 'roomSignOut']
+
+root = dbFunc.withLogger(root, needLogged)
 
 module.exports = root
