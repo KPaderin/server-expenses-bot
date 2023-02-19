@@ -100,7 +100,7 @@ let root = {
         return await addBuy(input)
     }
 }
-const needLogged = ['payMoney', 'addBuy', 'roomSignOut']
+const needLogged = ['payMoney', 'addBuy']
 
 root = dbFunc.withLogger(root, needLogged)
 

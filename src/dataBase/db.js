@@ -13,7 +13,7 @@ const dbFunc = {
             room[0].roomId = room[0]['_id'].toString()
             return room[0]
         } catch (e) {
-            return e
+            throw e
         }
     },
     getRoom: async (roomId) => {
@@ -22,7 +22,7 @@ const dbFunc = {
             room.roomId = room['_id'].toString()
             return room
         } catch (e) {
-            return e
+            throw e
         }
     },
     getRooms: async (userId) => {
@@ -31,7 +31,7 @@ const dbFunc = {
             rooms.forEach(room => {room.roomId = room['_id'].toString()})
             return rooms
         } catch (e) {
-            return e
+            throw e
         }
     },
     updateRoom: async (room) => {
@@ -43,7 +43,7 @@ const dbFunc = {
             newRoom.roomId = room['_id'].toString()
             return newRoom
         } catch (e) {
-            return e
+            throw e
         }
     },
     withLogger: (root, needLogged) => {
@@ -57,7 +57,7 @@ const dbFunc = {
                     try {
                         if(needLogged.find(item => item === prop))
                         {
-                            logger(
+                            await logger(
                                 prop,
                                 input.input,
                                 input.input.roomId,
@@ -73,7 +73,7 @@ const dbFunc = {
                         throw e
                     }
                     finally {
-                        session.endSession()
+                        await session.endSession()
                     }
                     return await res
                 }
