@@ -24,7 +24,7 @@ console.log('GraphQL API server running at localhost:' + port);
 const StartApp = async () => {
   try {
     mongoose.set('strictQuery', false);
-    await mongoose.connect(DB_URL, {useUnifiedTopology: true, useNewUrlParser:true})
+    await mongoose.connect(DB_URL, {useUnifiedTopology: true, useNewUrlParser: true})
   } catch (e) {
     console.log(e)
   }

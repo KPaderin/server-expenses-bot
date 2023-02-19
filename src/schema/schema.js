@@ -32,6 +32,11 @@ const schema = buildSchema(`
     userInput: UserInput!
   }
   
+  input RoomSignOutInput {
+    roomId: ID!
+    userId: ID!
+  }
+  
   input PayMoneyInput {
     roomId: ID!
     userSetterId: ID!
@@ -54,6 +59,7 @@ const schema = buildSchema(`
   type Mutation {
     createRoom(input: RoomInput!): Room
     roomSignIn(input: RoomSignInInput!): Room
+    roomSignOut(input: RoomSignOutInput!): Room
     payMoney(input: PayMoneyInput!): Room
     addBuy(input: BuyInput!): Room
   }

@@ -21,6 +21,19 @@ const roomSignIn = async (input) => {
     return await dbFunc.updateRoom(room)
 }
 
+const roomSignOut = async (input) => {
+    let room = await getRoom(input.roomId)
+    let user = room.members.find(member => member.id === input.userId);
+
+    if(!user)
+        throw errorsList.userNotExist;
+    if(user.debit !== 0)
+        throw errorsList.debitNotZero;
+
+    room.members = room.members.filter(member => member.id !== input.userId)
+    return await dbFunc.updateRoom(room)
+}
+
 const findUserInRoom = (userId, room) => {
     let user = room.members.find((member) => member.id === userId)
     if(!user)
@@ -73,6 +86,10 @@ const root = {
 
     roomSignIn: ({input}) => {
         return roomSignIn(input)
+    },
+
+    roomSignOut: ({input}) => {
+        return roomSignOut(input)
     },
 
     payMoney: ({input}) => {
