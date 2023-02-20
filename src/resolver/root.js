@@ -61,8 +61,10 @@ const addBuy = async (input) => {
     if(!input.membersId.find(id => id === input.userSetterId))
         throw errorsList.userSetterNotFound
 
-    userSetter.debit -= input.value
-    members.forEach(member => member.debit += Number(input.value) / input.membersId.length)
+    let partCost = Math.round(Number(input.value) / input.membersId.length);
+
+    userSetter.debit -= partCost * members.length
+    members.forEach(member => member.debit += partCost)
 
     return await dbFunc.updateRoom(room)
 }
